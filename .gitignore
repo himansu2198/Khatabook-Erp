@@ -1,0 +1,17 @@
+# Frontend
+khatabook-erp-frontend/node_modules/
+khatabook-erp-frontend/.next/
+khatabook-erp-frontend/.env.local
+
+# Backend
+khatabook-erp-backend/venv/
+khatabook-erp-backend/.env
+khatabook-erp-backend/__pycache__/
+khatabook-erp-backend/**/__pycache__/
+khatabook-erp-backend/**/*.pyc
+khatabook-erp-backend/**/*.pyo
+
+# General
+.DS_Store
+*.log
+Thumbs.db

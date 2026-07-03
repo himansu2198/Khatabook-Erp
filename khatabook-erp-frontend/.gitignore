@@ -1,0 +1,18 @@
+@"
+# Frontend
+khatabook-erp-frontend/node_modules/
+khatabook-erp-frontend/.next/
+khatabook-erp-frontend/.env.local
+
+# Backend
+khatabook-erp-backend/venv/
+khatabook-erp-backend/__pycache__/
+khatabook-erp-backend/.env
+khatabook-erp-backend/**/__pycache__/
+khatabook-erp-backend/**/*.pyc
+
+# General
+.DS_Store
+*.log
+Thumbs.db
+"@ | Out-File -FilePath ".gitignore" -Encoding utf8
