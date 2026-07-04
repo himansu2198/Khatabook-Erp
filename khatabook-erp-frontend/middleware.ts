@@ -1,36 +1,31 @@
-// middleware.ts
-
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
-const PUBLIC_ROUTES = [
-  "/login",
-  "/register",
-  "/forgot-password",
-]
-
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
+  const token    = request.cookies.get("khatabook_access_token")?.value
+  const pathname = request.nextUrl.pathname
 
-  // ✅ Root always shows landing page — never redirect
-  if (pathname === "/") {
-    return NextResponse.next()
+  // Auth pages — redirect to gateway if logged in
+  if (["/login", "/register"].includes(pathname)) {
+    if (token) {
+      return NextResponse.redirect(new URL("/gateway", request.url))
+    }
   }
 
-  const isPublicRoute = PUBLIC_ROUTES.some((route) =>
-    pathname === route || pathname.startsWith(route + "/")
+  // Protected pages — redirect to login if not logged in
+  const protectedPaths = [
+    "/gateway",
+    "/masters",
+    "/vouchers",
+    "/reports",
+  ]
+
+  const isProtected = protectedPaths.some((path) =>
+    pathname.startsWith(path)
   )
 
-  const token = request.cookies.get("khatabook_access_token")?.value
-
-  if (!token && !isPublicRoute) {
-    const loginUrl = new URL("/login", request.url)
-    loginUrl.searchParams.set("redirect", pathname)
-    return NextResponse.redirect(loginUrl)
-  }
-
-  if (token && PUBLIC_ROUTES.includes(pathname)) {
-    return NextResponse.redirect(new URL("/gateway", request.url))
+  if (isProtected && !token) {
+    return NextResponse.redirect(new URL("/login", request.url))
   }
 
   return NextResponse.next()
@@ -38,6 +33,11 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.png$).*)",
+    "/gateway/:path*",
+    "/masters/:path*",
+    "/vouchers/:path*",
+    "/reports/:path*",
+    "/login",
+    "/register",
   ],
 }
